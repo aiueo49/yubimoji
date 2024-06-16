@@ -16,6 +16,10 @@ class UserSessionsController < ApplicationController
 
   def mypage
     @user = current_user
+    # 一覧ページから学習ページに遷移したとき、学習ページに表示する最新の問題を取得
+    @hiragana = Hiragana.last
+    characters = @hiragana.character.chars
+    @sign_languages = characters.map { |char| SignLanguage.find_by(character: char) }
   end
 
   def destroy
