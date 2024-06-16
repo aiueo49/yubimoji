@@ -38,6 +38,19 @@ class HiraganasController < ApplicationController
     @sign_languages = characters.map { |char| SignLanguage.find_by(character: char) }
   end
 
+  # 学習ページで「次の問題」ボタンを押したときに呼び出されるアクション
+  def next
+    # URLパラメータから現在の問題のIDを取得
+    current_id = params[:id].to_i
+    # 現在の問題のIDよりも小さいIDを持つ問題の中で最小のIDを取得
+    @hiragana = Hiragana.where("id < ?", current_id).order(created_at: :desc).first
+
+    if @hiragana.nil?
+      redirect_to mypage_path, notice: "これ以上問題がありません"
+    else
+      redirect_to study_hiragana_path(@hiragana)
+    end
+  end
 
   def trial
     characters = params[:character]&.chars || []
